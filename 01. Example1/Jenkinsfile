@@ -1,10 +1,10 @@
 pipeline {
-    agent {
-        docker {
-            image 'python:3.9' // Use a Python Docker image
-            args '-v /var/run/docker.sock:/var/run/docker.sock' // Optional: if you need Docker-in-Docker
-        }
-    }
+    // agent {
+    //     docker {
+    //         image 'python:3.9' // Use a Python Docker image
+    //         args '-v /var/run/docker.sock:/var/run/docker.sock' // Optional: if you need Docker-in-Docker
+    //     }
+    // }
 
     environment {
         GIT_REPO = 'https://github.com/JayShenkar07/Docker-Repository.git'
