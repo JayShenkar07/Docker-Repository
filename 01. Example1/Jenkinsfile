@@ -1,0 +1,49 @@
+pipeline {
+    agent {
+        docker {
+            image 'python:3.9' // Use a Python Docker image
+            args '-v /var/run/docker.sock:/var/run/docker.sock' // Optional: if you need Docker-in-Docker
+        }
+    }
+
+    environment {
+        GIT_REPO = 'https://github.com/JayShenkar07/Docker-Repository.git'
+        GIT_BRANCH = "${env.test ?: 'main'}" // Default to 'main' if BRANCH_NAME is not provided
+        SCRIPT = 'app.py' // Replace with your script's name
+    }
+
+    parameters {
+        string(name: 'test', defaultValue: 'main', description: 'Branch to build')
+    }
+
+    stages {
+        stage('Checkout') {
+            steps {
+                echo "Checking out branch: ${params.BRANCH_NAME}"
+                git branch: "${params.BRANCH_NAME}", url: "${GIT_REPO}"
+            }
+        }
+
+        stage('Install Dependencies') {
+            steps {
+                sh 'pip install -r requirements.txt'
+            }
+        }
+
+        stage('Run Script') {
+            steps {
+                sh "python ${SCRIPT}"
+            }
+        }
+    }
+
+    post {
+        success {
+            echo 'Pipeline succeeded.'
+        }
+        failure {
+            echo 'Pipeline failed.'
+        }
+    }
+}
+
