@@ -1,0 +1,27 @@
+version: "2.4"
+
+services:
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx-container
+    ports:
+      - "8080:80"
+
+  otel-collector:
+    image: otel/opentelemetry-collector:latest
+    container_name: otel-collector
+    ports:
+      - "4317:4317"
+      - "55680:55680"
+    networks:
+      - webnet
+
+  signoz-logspout:
+    image: signoz/logspout:latest
+    container_name: signoz-logspout
+    networks:
+      - webnet
+    environment:
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel-collector:4317
+
